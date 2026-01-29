@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Citum</title>
+    <!-- RemixIcon for Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="#" class="sidebar-logo">Citum</a>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#home" class="nav-item active" data-section="home">
+                    <i class="ri-dashboard-line" style="margin-right: 8px;"></i> Dashboard
+                </a>
+                <a href="#business" class="nav-item" data-section="business">
+                    <i class="ri-store-2-line" style="margin-right: 8px;"></i> Mi Negocio
+                </a>
+                <a href="#professionals" class="nav-item" data-section="professionals">
+                    <i class="ri-user-star-line" style="margin-right: 8px;"></i> Profesionales
+                </a>
+                <a href="#services" class="nav-item" data-section="services">
+                    <i class="ri-service-line" style="margin-right: 8px;"></i> Servicios
+                </a>
+                <a href="#promotions" class="nav-item" data-section="promotions">
+                    <i class="ri-percent-line" style="margin-right: 8px;"></i> Promociones
+                </a>
+                <a href="#support" class="nav-item" data-section="support">
+                    <i class="ri-customer-service-2-line" style="margin-right: 8px;"></i> Soporte
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="btn btn-outline btn-block">
+                    <i class="ri-logout-box-line" style="margin-right: 8px;"></i> Cerrar Sesión
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper">
+            <!-- Header -->
+            <header class="top-header">
+                <div style="display: flex; align-items: center;">
+                    <button class="mobile-toggle" id="sidebar-toggle">
+                        <i class="ri-menu-line"></i>
+                    </button>
+                    <!-- Search Bar -->
+                    <div class="search-bar">
+                        <input type="text" class="form-input" placeholder="Buscar en esta sección...">
+                    </div>
+                </div>
+
+                <!-- User Profile or Actions could go here -->
+                <div class="header-actions">
+                    <!-- Placeholder for user avatar or similar -->
+                </div>
+            </header>
+
+            <!-- Dynamic Content -->
+            <main class="main-content" id="main-content">
+                <!-- Content injected via JS -->
+                <div id="section-home">
+                    <h1>Bienvenido a Citum</h1>
+                    <p class="text-muted">Resumen de tu negocio hoy.</p>
+                </div>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="../js/pages/dashboard.js"></script>
+</body>
+
+</html>

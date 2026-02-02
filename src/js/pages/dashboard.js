@@ -1,5 +1,7 @@
 
-import { supabase } from '../core/supabase.js'
+import { supabase } from '../core/supabase.js';
+import { UI } from '../utils/ui.js';
+import { renderBusinessSection } from '../modules/business.js'
 
 document.addEventListener('DOMContentLoaded', async () => {
     // 1. Auth Check - checkSession() is async, but we want to fail fast.
@@ -17,7 +19,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     initNavigation()
 
     // 3. Initialize Logout
-    document.getElementById('logout-btn').addEventListener('click', handleLogout)
+    const logoutBtn = document.getElementById('logout-btn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', async () => {
+            UI.showConfirm(
+                'Cerrar Sesión',
+                '¿Estás seguro de que deseas salir?',
+                async () => {
+                    const { error } = await supabase.auth.signOut();
+                    if (error) console.error('Error signing out:', error);
+                    window.location.href = 'login.html';
+                },
+                'Cerrar Sesión',
+                'Cancelar',
+                true // Destructive
+            );
+        });
+    }
 
     // 4. Mobile Toggle
     document.getElementById('sidebar-toggle').addEventListener('click', () => {
@@ -57,31 +75,28 @@ function initNavigation() {
 
 function loadSection(sectionName) {
     const mainContent = document.getElementById('main-content')
+    mainContent.innerHTML = '' // Clear
 
-    // Placeholder content for now - In future tasks this will load actual modules
-    let content = ''
     switch (sectionName) {
         case 'home':
-            content = `<h1>Dashboard</h1><p>Métricas generales aquí.</p>`
+            mainContent.innerHTML = `<h1>Dashboard</h1><p>Métricas generales aquí.</p>`
             break
         case 'business':
-            content = `<h1>Mi Negocio</h1><p>Configuración del negocio.</p>`
+            renderBusinessSection(mainContent)
             break
         case 'professionals':
-            content = `<h1>Profesionales</h1><p>Gestión de staff.</p>`
+            mainContent.innerHTML = `<h1>Profesionales</h1><p>Gestión de staff.</p>`
             break
         case 'services':
-            content = `<h1>Servicios</h1><p>Catálogo de servicios.</p>`
+            mainContent.innerHTML = `<h1>Servicios</h1><p>Catálogo de servicios.</p>`
             break
         case 'promotions':
-            content = `<h1>Promociones</h1><p>Campañas activas.</p>`
+            mainContent.innerHTML = `<h1>Promociones</h1><p>Campañas activas.</p>`
             break
         case 'support':
-            content = `<h1>Soporte</h1><p>Tickets y ayuda.</p>`
+            mainContent.innerHTML = `<h1>Soporte</h1><p>Tickets y ayuda.</p>`
             break
         default:
-            content = `<h1>Sección no encontrada</h1>`
+            mainContent.innerHTML = `<h1>Sección no encontrada</h1>`
     }
-
-    mainContent.innerHTML = content
 }

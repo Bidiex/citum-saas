@@ -1,5 +1,5 @@
 ---
-trigger: always_on
+trigger: model_decision
 ---
 
 # System Prompt para IDE con IA
@@ -16,7 +16,7 @@ Este documento define **reglas estrictas, alcance funcional, arquitectura y crit
 * **Recursos UI:**
 
   * Iconos: RemixIcon
-  * Tipografías: Google Fonts (usar solo las necesarias y optimizadas)
+  * Tipografía: Inter, de Google Fonts
 
 ❗ **Prohibido** usar frameworks o librerías externas (React, Vue, Tailwind, Bootstrap, Moment, Lodash, etc.) **a menos que el propietario del proyecto lo autorice explícitamente**.
 

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configura tu Negocio - Citum</title>
+    <!-- RemixIcon -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/pages.css">
+    <style>
+        .onboarding-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--muted);
+            padding: var(--spacing-md);
+        }
+
+        .onboarding-card {
+            background: var(--card);
+            padding: var(--spacing-xl);
+            border-radius: var(--radius);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            /* Wider than login */
+            border: 1px solid var(--border);
+        }
+
+        .section-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            padding-bottom: var(--spacing-xs);
+            border-bottom: 1px solid var(--border);
+            color: var(--foreground);
+        }
+
+        .schedule-row {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .schedule-row label {
+            width: 100px;
+            font-weight: 500;
+        }
+
+        .schedule-time {
+            width: 110px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="onboarding-container">
+        <div class="onboarding-card">
+            <header class="login-header">
+                <h1>Bienvenido a Citum</h1>
+                <p>Configura tu negocio para empezar</p>
+            </header>
+
+            <form id="onboarding-form">
+                <!-- 1. Información Básica -->
+                <h2 class="section-title">Información del Negocio</h2>
+
+                <!-- Logo Upload -->
+                <div class="avatar-upload-container">
+                    <label for="business-logo" class="avatar-preview" id="avatar-preview-area">
+                        <i class="ri-image-add-line"></i>
+                        <!-- Image will be injected here -->
+                    </label>
+                    <label for="business-logo" class="avatar-label">Subir Logo</label>
+                    <input type="file" id="business-logo" accept="image/*" class="hidden">
+                    <p class="text-xs text-muted"
+                        style="margin-top: 4px; font-size: 0.75rem; color: var(--muted-foreground);">
+                        Recomendado: 200x200px (PNG, JPG)
+                    </p>
+                </div>
+
+                <!-- Nombre y Slug -->
+                <div class="form-group">
+                    <label for="business-name" class="form-label">Nombre del Negocio</label>
+                    <input type="text" id="business-name" class="form-input" required placeholder="Ej. Barbería Estilo">
+                </div>
+
+                <div class="form-group">
+                    <label for="business-slug" class="form-label">URL del Catálogo (Slug)</label>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="color: var(--muted-foreground); font-size: 0.875rem;">citum.app/</span>
+                        <input type="text" id="business-slug" class="form-input" readonly
+                            style="background-color: var(--secondary); cursor: not-allowed;">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="business-desc" class="form-label">Descripción</label>
+                    <textarea id="business-desc" class="form-input" rows="3"
+                        placeholder="Breve descripción de tus servicios..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="business-address" class="form-label">Dirección</label>
+                    <input type="text" id="business-address" class="form-input" required
+                        placeholder="Calle 123 # 45-67">
+                </div>
+
+                <div class="form-group">
+                    <label for="business-phone" class="form-label">Teléfono (WhatsApp)</label>
+                    <input type="tel" id="business-phone" class="form-input" required placeholder="3001234567"
+                        maxlength="10">
+                </div>
+
+                <!-- 2. Horarios -->
+                <h2 class="section-title" style="margin-top: var(--spacing-lg);">Horarios de Atención</h2>
+                <div id="schedule-container">
+                    <!-- Loaded dynamically or static check for now? Let's do static simple rows to start -->
+                    <!-- We will generate this via JS or keep it simple in HTML -->
+                    <p style="font-size: 0.875rem; color: var(--muted-foreground); margin-bottom: 1rem;">
+                        Define tus horarios habituales. Los días desmarcados se considerarán cerrados.
+                    </p>
+                    <!-- Container for JS generated schedule rows -->
+                    <div id="weekly-schedule" class="schedule-list"></div>
+                </div>
+
+                <div class="form-actions" style="margin-top: var(--spacing-xl);">
+                    <button type="submit" class="btn btn-primary btn-block">Guardar y Continuar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module" src="../js/pages/onboarding.js"></script>
+</body>
+
+</html>

@@ -42,7 +42,8 @@ async function handleLogin(e) {
         setLoading(submitBtn, true, 'Iniciando...')
         const { data, error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
-        window.location.href = 'dashboard.html'
+
+        await checkBusinessAndRedirect()
     } catch (error) {
         alert('Error: ' + error.message)
     } finally {
@@ -68,7 +69,7 @@ async function handleRegister(e) {
         if (error) throw error
 
         alert('Registro exitoso. ' + (data.session ? 'Bienvenido!' : 'Por favor revisa tu correo para confirmar.'))
-        if (data.session) window.location.href = 'dashboard.html'
+        if (data.session) await checkBusinessAndRedirect()
     } catch (error) {
         alert('Error: ' + error.message)
     } finally {
@@ -83,5 +84,27 @@ function setLoading(btn, isLoading, text) {
     } else {
         btn.disabled = false
         btn.textContent = text
+    }
+}
+
+async function checkBusinessAndRedirect() {
+    try {
+        const { data: { user } } = await supabase.auth.getUser()
+        if (!user) return
+
+        const { data: business } = await supabase
+            .from('businesses')
+            .select('id')
+            .eq('user_id', user.id)
+            .single()
+
+        if (business) {
+            window.location.href = 'dashboard.html'
+        } else {
+            window.location.href = '../pages/onboarding.html'
+        }
+    } catch (err) {
+        console.log('No business found or error, redirecting to onboarding', err)
+        window.location.href = '../pages/onboarding.html'
     }
 }

@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700;900&display=swap');
+
 :root {
     /* Colors */
     --primary: #0F172A;
@@ -59,6 +61,18 @@ body {
     -webkit-font-smoothing: antialiased;
 }
 
+input[type="time"] {
+    font-family: var(--font-sans);
+}
+
+input,
+button,
+select,
+textarea {
+    font-family: var(--font-sans);
+    font-size: inherit;
+}
+
 /* Button & Form Utilities (Minimal set for Login) */
 .btn {
     display: inline-flex;
@@ -92,8 +106,9 @@ body {
 .form-label {
     display: block;
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 700;
     margin-bottom: var(--spacing-sm);
+    color: var(--foreground);
 }
 
 .form-input {
@@ -102,6 +117,12 @@ body {
     border: 1px solid var(--input);
     border-radius: var(--radius);
     font-size: 1rem;
+}
+
+.form-input::placeholder {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    opacity: 0.8;
 }
 
 .form-input:focus {

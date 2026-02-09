@@ -4,16 +4,27 @@ import { UI } from '../utils/ui.js';
 import { renderBusinessSection } from '../modules/business.js'
 
 document.addEventListener('DOMContentLoaded', async () => {
-    // 1. Auth Check - checkSession() is async, but we want to fail fast.
-    // However, clean JS modules flow: verify session first.
-    const { data: { session } } = await supabase.auth.getSession()
+    console.log('Dashboard DOMContentLoaded');
 
-    if (!session) {
-        window.location.href = 'login.html'
-        return
+    // 1. Auth Check - Wrapped in try-catch to handle connection errors
+    try {
+        const { data, error } = await supabase.auth.getSession();
+
+        if (error) throw error;
+
+        if (!data.session) {
+            console.log('No session, redirecting to login');
+            window.location.href = 'login.html';
+            return;
+        }
+
+        console.log('User logged in:', data.session.user.email);
+    } catch (err) {
+        console.error('Auth Check Critical Error:', err);
+        UI.showToast('Error conectando con el sistema. Verifique su conexión o configuración.', 'error');
+        // We might want to stop here or allow partial loading. 
+        // For now, let's allow navigation to init so UI doesn't freeze, but most data fetches will likely fail too.
     }
-
-    console.log('User logged in:', session.user.email)
 
     // 2. Initialize Navigation
     initNavigation()
@@ -21,82 +32,107 @@ document.addEventListener('DOMContentLoaded', async () => {
     // 3. Initialize Logout
     const logoutBtn = document.getElementById('logout-btn');
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', async () => {
-            UI.showConfirm(
-                'Cerrar Sesión',
-                '¿Estás seguro de que deseas salir?',
-                async () => {
-                    const { error } = await supabase.auth.signOut();
-                    if (error) console.error('Error signing out:', error);
-                    window.location.href = 'login.html';
-                },
-                'Cerrar Sesión',
-                'Cancelar',
-                true // Destructive
-            );
-        });
+        logoutBtn.addEventListener('click', () => handleLogoutConfirm());
     }
 
     // 4. Mobile Toggle
-    document.getElementById('sidebar-toggle').addEventListener('click', () => {
-        document.getElementById('sidebar').classList.toggle('open')
-    })
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('open')
+        })
+    }
 })
 
-async function handleLogout() {
-    const { error } = await supabase.auth.signOut()
-    if (error) console.error('Error logging out:', error)
-    window.location.href = 'login.html'
+function handleLogoutConfirm() {
+    UI.showConfirm(
+        'Cerrar Sesión',
+        '¿Estás seguro de que deseas salir?',
+        async () => {
+            const { error } = await supabase.auth.signOut();
+            if (error) console.error('Error signing out:', error);
+            window.location.href = 'login.html';
+        },
+        'Cerrar Sesión',
+        'Cancelar',
+        true // Destructive
+    );
 }
 
 function initNavigation() {
-    const navItems = document.querySelectorAll('.nav-item')
-    const mainContent = document.getElementById('main-content')
+    console.log('initNavigation started');
+    // Handle initial hash or default to #home
+    handleHashChange();
 
-    navItems.forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.preventDefault()
+    // Listen for hash changes
+    window.addEventListener('hashchange', () => {
+        console.log('Hash change detected:', window.location.hash);
+        handleHashChange();
+    });
+}
 
-            // UI Update
-            navItems.forEach(nav => nav.classList.remove('active'))
-            item.classList.add('active')
+function handleHashChange() {
+    const hash = window.location.hash || '#home';
+    const sectionName = hash.substring(1); // remove '#'
+    console.log('handleHashChange:', hash, 'section:', sectionName);
 
-            // Section Switch Logic
-            const section = item.getAttribute('data-section')
-            loadSection(section)
+    // Update UI (Sidebar Active State)
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === hash) {
+            item.classList.add('active');
+        }
+    });
 
-            // Close mobile menu if open
-            if (window.innerWidth <= 768) {
-                document.getElementById('sidebar').classList.remove('open')
-            }
-        })
-    })
+    // Close mobile menu if open
+    if (window.innerWidth <= 768) {
+        document.getElementById('sidebar').classList.remove('open');
+    }
+
+    // Load Content
+    loadSection(sectionName);
 }
 
 function loadSection(sectionName) {
-    const mainContent = document.getElementById('main-content')
-    mainContent.innerHTML = '' // Clear
+    console.log('loadSection:', sectionName);
+    const mainContent = document.getElementById('main-content');
+    if (!mainContent) {
+        console.error('Main content container not found!');
+        return;
+    }
+
+    mainContent.innerHTML = ''; // Clear
 
     switch (sectionName) {
         case 'home':
-            mainContent.innerHTML = `<h1>Dashboard</h1><p>Métricas generales aquí.</p>`
-            break
+            mainContent.innerHTML = `
+                <div id="section-home">
+                    <h1>Bienvenido a Citum</h1>
+                    <p class="text-muted">Resumen de tu negocio hoy.</p>
+                </div>`;
+            break;
         case 'business':
-            renderBusinessSection(mainContent)
-            break
+            console.log('Rendering business section...');
+            try {
+                renderBusinessSection(mainContent);
+            } catch (err) {
+                console.error('Error calling renderBusinessSection:', err);
+            }
+            break;
         case 'professionals':
-            mainContent.innerHTML = `<h1>Profesionales</h1><p>Gestión de staff.</p>`
-            break
+            mainContent.innerHTML = `<h1>Profesionales</h1><p>Gestión de staff.</p>`;
+            break;
         case 'services':
-            mainContent.innerHTML = `<h1>Servicios</h1><p>Catálogo de servicios.</p>`
-            break
+            mainContent.innerHTML = `<h1>Servicios</h1><p>Catálogo de servicios.</p>`;
+            break;
         case 'promotions':
-            mainContent.innerHTML = `<h1>Promociones</h1><p>Campañas activas.</p>`
-            break
+            mainContent.innerHTML = `<h1>Promociones</h1><p>Campañas activas.</p>`;
+            break;
         case 'support':
-            mainContent.innerHTML = `<h1>Soporte</h1><p>Tickets y ayuda.</p>`
-            break
+            mainContent.innerHTML = `<h1>Soporte</h1><p>Tickets y ayuda.</p>`;
+            break;
         default:
-            mainContent.innerHTML = `<h1>Sección no encontrada</h1>`
+            console.warn('Section not found:', sectionName);
+            mainContent.innerHTML = `<h1>Sección no encontrada</h1><p>La sección "${sectionName}" no existe.</p>`;
     }
 }
